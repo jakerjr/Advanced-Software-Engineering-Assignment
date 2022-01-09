@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Assessment1
 {
-    class Triangle
+    public class Triangle
     {
         public int length;
         public int xPos;

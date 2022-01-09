@@ -4,21 +4,22 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
+using Microsoft.VisualBasic;
 
 namespace Assessment1
 {
     public class Commands
     {
         protected Graphics graphics;
-        protected Pen pen;
+        private Pen pen;
         protected int xPos, yPos; // Original position of the Pen
-        protected Boolean fillStatus = false; // Checks if fill is on
-        protected Brush brush;
+        private Boolean fillStatus = false; // Checks if fill is on
+        private Brush brush;
         protected Boolean invalidCode; // Checks for valid code.
         protected Boolean parameterError; // Checks the parameter.
-        protected float newSpace = 0; // To fill any needed float variables
-        protected int xVariable;
-        protected int yVariable;
+        private float newSpace = 0; // To fill any needed float variables
+        private int xVariable;
+        private int yVariable;
         protected int firstInput;
         protected int secondInput;
         protected Boolean variablePresent;
@@ -37,10 +38,12 @@ namespace Assessment1
             brush = new SolidBrush(Color.Black);
         }
 
+        protected Commands(){}
+
         /// <summary>
         /// Resets the Pen to the original position.
         /// </summary>
-        public void reset()
+        protected void reset()
         {
             NewPosition(0,0);
         }
@@ -58,7 +61,7 @@ namespace Assessment1
         /// <summary>
         /// Clears the drawing area to a white screen
         /// </summary>
-        public void clear()
+        protected void clear()
         {
             graphics.Clear(Color.White);
         }
@@ -171,52 +174,99 @@ namespace Assessment1
 
         protected void TwoInputs(String[] position)
         {
-            for (int x = 0; x < position.Length; x++)
+            try
             {
-                int xVariablePos = Array.IndexOf(position, "x");
-                int yVariablePos = Array.IndexOf(position, "y");
+                for (int x = 0; x < position.Length; x++)
+                {
+                    int xVariablePos = Array.IndexOf(position, "x");
+                    int yVariablePos = Array.IndexOf(position, "y");
 
-                if (int.TryParse(position[x], out int value))
-                {
-                    int intVariable = Int32.Parse(position[x]);
-                    if (position.Length == 3)
+                    if (int.TryParse(position[x], out int value))
                     {
-                        firstInput = Int32.Parse(position[1]);
-                        secondInput = Int32.Parse(position[2]);
+                        if (position.Length == 3)
+                        {
+                            firstInput = Int32.Parse(position[1]);
+                            secondInput = Int32.Parse(position[2]);
+                        }
                     }
-                }
-                else if (position[x].Equals("x"))
-                {
-                    if (xVariablePos == 1)
+                    else if (position[x].Equals("x"))
                     {
-                        firstInput = xVariable;
-                    } else if (xVariablePos == 2)
-                    {
-                        secondInput = xVariable;
-                    } else if (xVariablePos == 1 && xVariablePos == 2)
-                    {
-                        firstInput = xVariable;
-                        secondInput = xVariable;
+                        if (xVariablePos == 1)
+                        {
+                            firstInput = xVariable;
+                        }
+                        else if (xVariablePos == 2)
+                        {
+                            secondInput = xVariable;
+                        }
+                        else if (xVariablePos == 1 && xVariablePos == 2)
+                        {
+                            xVariable = 100;
+                            firstInput = xVariable;
+                            secondInput = xVariable;
+                        }
                     }
-                }
-                else if (position[x].Equals("y"))
-                {
-                    if (yVariablePos == 1)
+                    else if (position[x].Equals("y"))
                     {
-                        firstInput = yVariable;
-                    }
-                    else if (yVariablePos == 2)
-                    {
-                        secondInput = yVariable;
-                    }
-                    else if (yVariablePos == 1 && yVariablePos == 2)
-                    {
-                        firstInput = yVariable;
-                        secondInput = yVariable;
+                        if (yVariablePos == 1)
+                        {
+                            firstInput = yVariable;
+                        }
+                        else if (yVariablePos == 2)
+                        {
+                            secondInput = yVariable;
+                        }
+                        else if (yVariablePos == 1 && yVariablePos == 2)
+                        {
+                            firstInput = yVariable;
+                            secondInput = yVariable;
+                        }
                     }
                 }
             }
-            
+            catch (Exception)
+            {
+               Console.WriteLine("e"); 
+            }
+
+        }
+
+        protected void singleInput(String[] position)
+        {
+            try
+            {
+                for (int x = 0; x < position.Length; x++)
+                {
+                    int xVariablePos = Array.IndexOf(position, "x");
+                    int yVariablePos = Array.IndexOf(position, "y");
+
+                    if (int.TryParse(position[x], out int value))
+                    {
+                        if (position.Length == 2)
+                        {
+                            firstInput = Int32.Parse(position[1]);
+                        }
+                    }
+                    else if (position[x].Equals("x"))
+                    {
+                        if (xVariablePos == 1)
+                        {
+                            firstInput = xVariable;
+                        }
+                    }
+                    else if (position[x].Equals("y"))
+                    {
+                        if (yVariablePos == 1)
+                        {
+                            firstInput = yVariable;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("e");
+            }
         }
 
         /// <summary>
@@ -225,14 +275,108 @@ namespace Assessment1
         /// <param name="instruction">Takes in a String. The string will allow a user to interact with the program.</param>
         public void executeCommands(String instruction)
         {
-            new Inputs(instruction);
+            String[] instructionSize = instruction.Split(null);
+            // simple exception handling to capture invalid parameters
+            try
+            {
+                // if else statements to handle command operations and error checking
+                if (instructionSize[0].Equals("rect"))
+                {
+                    if (instructionSize.Length == 3)
+                    {
+                        TwoInputs(instructionSize);
+                        DrawRectangle(firstInput, secondInput);
+                    }
+                    else
+                    {
+                        parameterError = true;
+                    }
+                }
+                else if (instructionSize[0].Equals("triangle"))
+                {
+                    if (instructionSize.Length == 2)
+                    {
+                        singleInput(instructionSize);
+                        DrawTriangle(firstInput);
+                    }
+                    else
+                    {
+                        parameterError = true;
+                    }
+                }
+                else if (instructionSize[0].Equals("circle"))
+                {
+                    if (instructionSize.Length == 2)
+                    {
+                        DrawCircle(Int32.Parse(instructionSize[1]));
+                    }
+                    else
+                    {
+                        parameterError = true;
+                    }
+                }
+                else if (instructionSize[0].Equals("drawto"))
+                {
+                    if (instructionSize.Length == 3)
+                    {
+                        DrawTo(Int32.Parse(instructionSize[1]), Int32.Parse(instructionSize[2]));
+                    }
+                    else
+                    {
+                        parameterError = true;
+                    }
+                }
+                else if (instructionSize[0].Equals("reset"))
+                {
+                    reset();
+                }
+                else if (instructionSize[0].Equals("moveto"))
+                {
+                    if (instructionSize.Length == 3 && !variablePresent)
+                    {
+                        MoveTo(Int32.Parse(instructionSize[1]), Int32.Parse(instructionSize[2]));
+                    }
+                    else
+                    {
+                        parameterError = true;
+                    }
+                }
+                else if (instructionSize[0].Equals("clear"))
+                {
+                    clear();
+                }
+                else if (instructionSize[0].Equals("fill"))
+                {
+                    Fill(instructionSize[1]);
+                }
+                else if (instructionSize[0].Equals("pen"))
+                {
+                    ChangePenColor(instructionSize[1]);
+                }
+                else if (instructionSize[0].Equals("x"))
+                {
+                    SetXPos(Int32.Parse(instructionSize[1]));
+                }
+                else if (instructionSize[0].Equals("y"))
+                {
+                    SetYPos(Int32.Parse(instructionSize[1]));
+                }
+                else
+                {
+                    invalidCode = true;
+                }
+            } 
+            catch (Exception)
+            {
+                parameterError = true;
+            }
         }
 
         /// <summary>
         /// Prints text on the graphics window
         /// </summary>
         /// <param name="test">The text that will be printed on the window</param>
-        public void DrawString(String msg)
+        private void DrawString(String msg)
         {
             Font font = new Font("Arial", 16);
             graphics.DrawString(msg, font, brush, 0, newSpace);
@@ -266,7 +410,7 @@ namespace Assessment1
         /// </summary>
         /// <param name="x">New X coordinate of the pen.</param>
         /// <param name="y">New Y coordinate of the pen.</param>
-        protected void NewPosition(int x, int y)
+        private void NewPosition(int x, int y)
         {
             xPos = x;
             yPos = y;

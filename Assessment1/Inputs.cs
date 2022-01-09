@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Assessment1
 {
-    class Inputs: Commands
+    class Inputs : Commands
     {
 
         public Inputs(String inputs)
@@ -68,7 +68,7 @@ namespace Assessment1
                     if (instructionSize.Length == 3 && !variablePresent)
                     {
                         MoveTo(Int32.Parse(instructionSize[1]), Int32.Parse(instructionSize[2]));
-                    } 
+                    }
                     else
                     {
                         parameterError = true;
@@ -98,7 +98,7 @@ namespace Assessment1
                 {
                     invalidCode = true;
                 }
-            }
+            } 
             catch (Exception)
             {
                 parameterError = true;

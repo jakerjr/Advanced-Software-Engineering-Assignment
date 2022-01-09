@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace Assessment1
         {
             InitializeComponent();
             commands = new Commands(Graphics.FromImage(outputBitmap));
+
+            outputCanvas.Image = outputBitmap;
         }
 
         /// <summary>
@@ -99,6 +102,55 @@ namespace Assessment1
                 commands.CommandError(x);
                 Refresh();
             }
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            
+        }
+
+        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFD.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            saveFD.FileName = "Save Image";
+            saveFD.Filter = "JPEG|*.jpeg";
+
+            if (saveFD.ShowDialog() != DialogResult.Cancel)
+            {
+                string savePath = saveFD.FileName;
+
+                Bitmap OutputBitmap = new Bitmap(outputCanvas.Image);
+
+                OutputBitmap.Save(savePath, ImageFormat.Jpeg);
+
+                MessageBox.Show("Image Saved");
+
+
+            }
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Title = "Open Image";
+            dlg.Filter = "bmp files (.JPEG)|.jpeg";
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                outputCanvas.Image = Image.FromFile(dlg.FileName);
+            }
+            dlg.Dispose();
         }
     }
 }

@@ -6,9 +6,9 @@ namespace Assessment1
 {
 
     /// <summary>
-    /// Rectangle class is used to calculate and output integers to draw a rectangle.
+    /// Rectangles class is used to calculate and output integers to draw a rectangle.
     /// </summary>
-    class Rectangle
+    public class Rectangle
     {
         public int xPosition;
         public int yPosition;
