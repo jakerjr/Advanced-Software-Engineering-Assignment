@@ -231,6 +231,10 @@ namespace Assessment1
 
         }
 
+        /// <summary>
+        /// Processes variables and outputs a value
+        /// </summary>
+        /// <param name="position">takes in a string array</param>
         protected void singleInput(String[] position)
         {
             try

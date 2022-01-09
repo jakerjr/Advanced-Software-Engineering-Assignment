@@ -109,16 +109,6 @@ namespace Assessment1
             
         }
 
-        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
-        {
-            
-        }
-
-        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
-        {
-            
-        }
-
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFD.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
