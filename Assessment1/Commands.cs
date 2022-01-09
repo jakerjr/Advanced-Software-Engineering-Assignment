@@ -9,14 +9,21 @@ namespace Assessment1
 {
     public class Commands
     {
-        private Graphics graphics;
-        private Pen pen;
-        private int xPos, yPos; // Original position of the Pen
-        private Boolean fillStatus = false; // Checks if fill is on
-        private Brush brush;
-        private Boolean invalidCode; // Checks for valid code.
-        private Boolean parameterError; // Checks the parameter.
-        private float newSpace = 0; // To fill any needed float variables
+        protected Graphics graphics;
+        protected Pen pen;
+        protected int xPos, yPos; // Original position of the Pen
+        protected Boolean fillStatus = false; // Checks if fill is on
+        protected Brush brush;
+        protected Boolean invalidCode; // Checks for valid code.
+        protected Boolean parameterError; // Checks the parameter.
+        protected float newSpace = 0; // To fill any needed float variables
+        protected int xVariable;
+        protected int yVariable;
+        protected int firstInput;
+        protected int secondInput;
+        protected Boolean variablePresent;
+        protected Boolean xVariablePresent;
+        protected Boolean yVariablePresent;
 
         /// <summary>
         /// Overloads the parameters when the class is initiated.
@@ -43,7 +50,7 @@ namespace Assessment1
         /// </summary>
         /// <param name="toX">X coordinate position.</param>
         /// <param name="toY">Y coordinate position.</param>
-        private void MoveTo(int toX, int toY)
+        protected void MoveTo(int toX, int toY)
         {
             NewPosition(toX, toY);
         }
@@ -61,7 +68,7 @@ namespace Assessment1
         /// </summary>
         /// <param name="toX">The X coordinate of the line.</param>
         /// <param name="toY">The Y position of the line.</param>
-        private void DrawTo(int toX, int toY)
+        protected void DrawTo(int toX, int toY)
         {
             graphics.DrawLine(pen, xPos, yPos, toX, toY);
             NewPosition(toX, toY);
@@ -72,7 +79,7 @@ namespace Assessment1
         /// </summary>
         /// <param name="toX">X coordinate to for the X position of the rectangle.</param>
         /// <param name="toY">Y coordinate to for the Y position of the rectangle.</param>
-        private void DrawRectangle(int toX, int toY)
+        protected void DrawRectangle(int toX, int toY)
         {
             Rectangle rectangle = new Rectangle(xPos, yPos, toX, toY);
             if (!fillStatus)
@@ -89,7 +96,7 @@ namespace Assessment1
         /// Draws a circle around the pen.
         /// </summary>
         /// <param name="radius">Takes in an integer for how big the circle will be.</param>
-        private void DrawCircle(int radius)
+        protected void DrawCircle(int radius)
         {
             Circle circle = new Circle(xPos, yPos, radius);
             if (!fillStatus)
@@ -106,11 +113,12 @@ namespace Assessment1
         /// Draws a triangle around the pen.
         /// </summary>
         /// <param name="length">Takes in an integer for how long the triangle will be.</param>
-        private void DrawTriangle(int length)
+        protected void DrawTriangle(int length)
         {
-            Point[] point = { new Point (xPos, yPos - length / 2),
-                new Point(xPos + length / 2, yPos + length / 2),
-                new Point(xPos - length / 2, yPos + length / 2) };
+            Triangle triangle = new Triangle(length, xPos, yPos);
+            Point[] point = { new Point (triangle.xPos, triangle.yPos - triangle.length / 2),
+                new Point(triangle.xPos + triangle.length / 2, triangle.yPos + triangle.length / 2),
+                new Point(triangle.xPos - triangle.length / 2, triangle.yPos + triangle.length / 2) };
             if (!fillStatus)
             {
                 graphics.DrawPolygon(pen, point);
@@ -125,7 +133,7 @@ namespace Assessment1
         /// Changes the color of the pen and brush.
         /// </summary>
         /// <param name="setColor">Takes in a String. The String must be a valid color.</param>
-        private void ChangePenColor(String setColor)
+        protected void ChangePenColor(String setColor)
         {
             pen.Color = Color.FromName(setColor);
             brush = new SolidBrush(Color.FromName(setColor));
@@ -135,7 +143,7 @@ namespace Assessment1
         /// Fill command. Used to enable or disable shape filling.
         /// </summary>
         /// <param name="status">Takes in a String. The String result can only be on or off.</param>
-        private void Fill(String status)
+        protected void Fill(String status)
         {
             if(status.Equals("on"))
             {
@@ -147,97 +155,77 @@ namespace Assessment1
             }
         }
 
+        protected void SetXPos(int xVariable)
+        {
+            this.xVariable = xVariable;
+            variablePresent = true;
+            xVariablePresent = true;
+        }
+
+        protected void SetYPos(int yVariable)
+        {
+            this.yVariable = yVariable;
+            variablePresent = true;
+            yVariablePresent = true;
+        }
+
+        protected void TwoInputs(String[] position)
+        {
+            for (int x = 0; x < position.Length; x++)
+            {
+                int xVariablePos = Array.IndexOf(position, "x");
+                int yVariablePos = Array.IndexOf(position, "y");
+
+                if (int.TryParse(position[x], out int value))
+                {
+                    int intVariable = Int32.Parse(position[x]);
+                    if (position.Length == 3)
+                    {
+                        firstInput = Int32.Parse(position[1]);
+                        secondInput = Int32.Parse(position[2]);
+                    }
+                }
+                else if (position[x].Equals("x"))
+                {
+                    if (xVariablePos == 1)
+                    {
+                        firstInput = xVariable;
+                    } else if (xVariablePos == 2)
+                    {
+                        secondInput = xVariable;
+                    } else if (xVariablePos == 1 && xVariablePos == 2)
+                    {
+                        firstInput = xVariable;
+                        secondInput = xVariable;
+                    }
+                }
+                else if (position[x].Equals("y"))
+                {
+                    if (yVariablePos == 1)
+                    {
+                        firstInput = yVariable;
+                    }
+                    else if (yVariablePos == 2)
+                    {
+                        secondInput = yVariable;
+                    }
+                    else if (yVariablePos == 1 && yVariablePos == 2)
+                    {
+                        firstInput = yVariable;
+                        secondInput = yVariable;
+                    }
+                }
+            }
+            
+        }
+
         /// <summary>
         /// Executes the commands.
         /// </summary>
         /// <param name="instruction">Takes in a String. The string will allow a user to interact with the program.</param>
         public void executeCommands(String instruction)
         {
-            String[] instructionSize = instruction.Split(null);
-            // simple exception handling to capture invalid parameters
-            try
-            {
-                // if else statements to handle command operations and error checking
-                if (instructionSize[0].Equals("rect"))
-                {
-                    if (instructionSize.Length == 3)
-                    {
-                        DrawRectangle(Int32.Parse(instructionSize[1]), Int32.Parse(instructionSize[2]));
-                    }
-                    else
-                    {
-                        parameterError = true;
-                    }
-                }
-                else if (instructionSize[0].Equals("triangle"))
-                {
-                     if (instructionSize.Length == 2)
-                    {
-                        DrawTriangle(Int32.Parse(instructionSize[1]));
-                    }
-                    else
-                    {
-                        parameterError = true;
-                    }
-                }
-                else if (instructionSize[0].Equals("circle"))
-                {
-                    if (instructionSize.Length == 2)
-                    {
-                        DrawCircle(Int32.Parse(instructionSize[1]));
-                    }
-                    else
-                    {
-                        parameterError = true;
-                    }
-                }
-                else if (instructionSize[0].Equals("drawto"))
-                {
-                    if (instructionSize.Length == 3)
-                    {
-                        DrawTo(Int32.Parse(instructionSize[1]), Int32.Parse(instructionSize[2]));
-                    }
-                    else
-                    {
-                        parameterError = true;
-                    }
-                }
-                else if (instructionSize[0].Equals("reset"))
-                {
-                    reset();
-                }
-                else if (instructionSize[0].Equals("moveto"))
-                {
-                    if (instructionSize.Length == 3)
-                    {
-                        MoveTo(Int32.Parse(instructionSize[1]), Int32.Parse(instructionSize[2]));
-                    }
-                    else
-                    {
-                        parameterError = true;
-                    }
-                }
-                else if (instructionSize[0].Equals("clear"))
-                {
-                    clear();
-                }
-                else if (instructionSize[0].Equals("fill"))
-                {
-                    Fill(instructionSize[1]);
-                }
-                else if (instructionSize[0].Equals("pen"))
-                {
-                    ChangePenColor(instructionSize[1]);
-                }
-                else
-                {
-                    invalidCode = true;
-                }
-            }
-            catch (Exception)
-            {
-                parameterError = true;
-            }
+            new Inputs(instruction);
         }
 
         /// <summary>
@@ -278,7 +266,7 @@ namespace Assessment1
         /// </summary>
         /// <param name="x">New X coordinate of the pen.</param>
         /// <param name="y">New Y coordinate of the pen.</param>
-        private void NewPosition(int x, int y)
+        protected void NewPosition(int x, int y)
         {
             xPos = x;
             yPos = y;
