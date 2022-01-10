@@ -22,6 +22,9 @@ namespace AssessmentTest
             Assert.AreEqual(50, circleTest.rad);
         }
 
+        /// <summary>
+        /// Testing values for rectangle
+        /// </summary>
         [TestMethod]
         public void TestDrawRect()
         {
@@ -34,6 +37,9 @@ namespace AssessmentTest
             Assert.AreEqual(400, rectangleTest.toY);
         }
 
+        /// <summary>
+        /// Testing values for rectangle
+        /// </summary>
         [TestMethod]
         public void TestDrawTriangle()
         {

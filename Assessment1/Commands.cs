@@ -158,6 +158,10 @@ namespace Assessment1
             }
         }
 
+        /// <summary>
+        /// Sets the variable X
+        /// </summary>
+        /// <param name="xVariable">takes in an integer</param>
         protected void SetXPos(int xVariable)
         {
             this.xVariable = xVariable;
@@ -165,6 +169,10 @@ namespace Assessment1
             xVariablePresent = true;
         }
 
+        /// <summary>
+        /// Sets the variable Y
+        /// </summary>
+        /// <param name="yVariable">takes in an integer</param>
         protected void SetYPos(int yVariable)
         {
             this.yVariable = yVariable;
@@ -172,6 +180,10 @@ namespace Assessment1
             yVariablePresent = true;
         }
 
+        /// <summary>
+        /// porcess variables for drawings
+        /// </summary>
+        /// <param name="position">takes in an array of string</param>
         protected void TwoInputs(String[] position)
         {
             try
@@ -312,7 +324,8 @@ namespace Assessment1
                 {
                     if (instructionSize.Length == 2)
                     {
-                        DrawCircle(Int32.Parse(instructionSize[1]));
+                        singleInput(instructionSize);
+                        DrawCircle(firstInput);
                     }
                     else
                     {

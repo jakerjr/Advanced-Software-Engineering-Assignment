@@ -5,6 +5,9 @@ using System.Drawing;
 
 namespace Assessment1
 {
+    /// <summary>
+    /// Triangle class use to calculate triangle values
+    /// </summary>
     public class Triangle
     {
         public int length;

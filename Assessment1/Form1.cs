@@ -109,6 +109,11 @@ namespace Assessment1
             
         }
 
+        /// <summary>
+        /// used to save images from canvas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFD.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -130,6 +135,11 @@ namespace Assessment1
             }
         }
 
+        /// <summary>
+        /// use to load imges to canvas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
